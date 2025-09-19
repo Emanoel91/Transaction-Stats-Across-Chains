@@ -7,10 +7,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 
 # --- Page Config ------------------------------------------------------------------------------------------------------
-st.set_page_config(
-    page_title="Transaction Stats Across Chains",
-    layout="wide"
-)
+st.set_page_config(page_title="Transaction Stats Across Chains", layout="wide")
 
 st.title("⛓ Transaction Stats Across Chains")
 # --- Builder Info ---------------------------------------------------------------------------------------------------------
@@ -23,8 +20,18 @@ st.markdown(
         </div>
     </div>
     """,
-    unsafe_allow_html=True
-)
+    unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div style="margin-top: 20px; margin-bottom: 20px; font-size: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://axelarscan.io/logos/logo.png" style="width:25px; height:25px; border-radius: 50%;">
+            <span>Built by: <a href="https://x.com/axelar" target="_blank">Powered by Axelar</a></span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True)
 
 st.info("⏳ On-chain data retrieval may take a few moments. Please wait while the results load.")
 st.image("https://i.postimg.cc/mD6JM4mM/Screenshot-839.png", use_container_width=True)
