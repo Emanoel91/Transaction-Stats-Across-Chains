@@ -14,7 +14,7 @@ st.set_page_config(
 
 st.title("⛓ Transaction Stats Across Chains")
 st.info("⏳ On-chain data retrieval may take a few moments. Please wait while the results load.")
-st.image("https://i.postimg.cc/mD6JM4mM/Screenshot-839.png", use_column_width=True)
+st.image("https://i.postimg.cc/mD6JM4mM/Screenshot-839.png", use_container_width=True)
 # --- Snowflake Connection ---------------------------------------------------------------------------------------------
 snowflake_secrets = st.secrets["snowflake"]
 user = snowflake_secrets["user"]
