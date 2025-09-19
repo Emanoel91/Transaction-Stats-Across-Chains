@@ -73,7 +73,7 @@ df_all["Txns Count"] = df_all["Txns Count"].astype(int)
 df_all["Chain"] = df_all["Chain"].astype(str)
 
 # --- Row 1: Line Chart - Daily Txns -----------------------------------------------------------------------------------
-st.subheader("📈 Daily Transactions per Chain (Last 30 Days)")
+
 df_line = df_all.sort_values(["Chain", "Date"])
 fig_line = px.line(
     df_line,
@@ -92,7 +92,7 @@ col1, col2 = st.columns(2)
 
 # Total Transactions
 with col1:
-    st.subheader("📊 Total Transactions per Chain (Last 30 Days)")
+
     df_total = df_all.groupby("Chain", as_index=False)["Txns Count"].sum()
     df_total = df_total.sort_values("Txns Count", ascending=False)
     category_order_total = df_total["Chain"].tolist()
@@ -107,13 +107,13 @@ with col1:
         category_orders={"Chain": category_order_total}
     )
     fig_bar_total.update_traces(texttemplate='%{text}', textposition='inside')
-    # افزایش ارتفاع بر اساس تعداد زنجیره‌ها
+
     fig_bar_total.update_layout(height=40 * len(df_total))
     st.plotly_chart(fig_bar_total, use_container_width=True)
 
 # Average Daily Transactions
 with col2:
-    st.subheader("📊 Average Daily Transactions per Chain (Last 30 Days)")
+
     df_avg = df_all.groupby("Chain", as_index=False)["Txns Count"].mean()
     df_avg["Txns Count"] = df_avg["Txns Count"].round().astype(int)
     df_avg = df_avg.sort_values("Txns Count", ascending=False)
@@ -129,6 +129,6 @@ with col2:
         category_orders={"Chain": category_order_avg}
     )
     fig_bar_avg.update_traces(texttemplate='%{text}', textposition='inside')
-    # افزایش ارتفاع بر اساس تعداد زنجیره‌ها
+
     fig_bar_avg.update_layout(height=40 * len(df_avg))
     st.plotly_chart(fig_bar_avg, use_container_width=True)
