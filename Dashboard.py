@@ -51,7 +51,6 @@ resp = requests.get(api_url)
 api_data = resp.json()
 
 df_api = pd.DataFrame(api_data["result"]["rows"])
-# === مهم: هر دو را با utc=True تبدیل می‌کنیم تا tz-aware (UTC) بشوند ===
 df_api["Date"] = pd.to_datetime(df_api["Date"], utc=True)
 
 # --- Load Snowflake Data -----------------------------------------------------------------------------------------------
@@ -65,22 +64,16 @@ group by 1
 order by 1
 """
 df_axelar = pd.read_sql(query, conn)
-# همین‌طور برای نتایج Snowflake هم utc=True تا یکسان شوند
 df_axelar["Date"] = pd.to_datetime(df_axelar["Date"], utc=True)
 
 # --- Combine API + Snowflake ------------------------------------------------------------------------------------------
 df_all = pd.concat([df_api, df_axelar], ignore_index=True)
 
-# اطمینان از نوع داده‌ها
 df_all["Txns Count"] = df_all["Txns Count"].astype(int)
 df_all["Chain"] = df_all["Chain"].astype(str)
 
-# (اختیاری برای دیباگ اگر هنوز خطا هست)
-# st.write("dtypes:", df_api["Date"].dtype, df_axelar["Date"].dtype, df_all["Date"].dtype)
-
 # --- Row 1: Line Chart - Daily Txns -----------------------------------------------------------------------------------
 st.subheader("📈 Daily Transactions per Chain (Last 30 Days)")
-# مرتب‌سازی به ازای هر Chain و سپس Date تا خطوط قاطی نشوند
 df_line = df_all.sort_values(["Chain", "Date"])
 fig_line = px.line(
     df_line,
@@ -88,48 +81,50 @@ fig_line = px.line(
     y="Txns Count",
     color="Chain",
     title="Daily Transactions Across Chains",
-    markers=False  # صریحاً فقط خط (no markers)
+    markers=False
 )
-# مطمئن می‌شویم حالت trace فقط 'lines' باشد
-fig_line.update_traces(mode='lines')
+fig_line.update_traces(mode="lines")
 fig_line.update_layout(legend_title_text="Chain")
 st.plotly_chart(fig_line, use_container_width=True)
 
-# --- Row 2: Bar Chart - Total Txns ------------------------------------------------------------------------------------
-st.subheader("📊 Total Transactions per Chain (Last 30 Days)")
-df_total = df_all.groupby("Chain", as_index=False)["Txns Count"].sum()
-df_total = df_total.sort_values("Txns Count", ascending=False)  # از بزرگ به کوچک
+# --- Row 2 & 3: Horizontal Bar Charts in One Row ----------------------------------------------------------------------
+col1, col2 = st.columns(2)
 
-# برای اطمینان از اینکه ترتیب دسته‌ها در نمودار حفظ می‌شود، از category_orders استفاده می‌کنیم
-category_order_total = df_total["Chain"].tolist()
-fig_bar_total = px.bar(
-    df_total,
-    x="Chain",
-    y="Txns Count",
-    text="Txns Count",
-    color="Chain",
-    title="Total Transactions by Chain (30 Days)",
-    category_orders={"Chain": category_order_total}
-)
-fig_bar_total.update_traces(texttemplate='%{text}', textposition='inside')
-st.plotly_chart(fig_bar_total, use_container_width=True)
+# Total Transactions
+with col1:
+    st.subheader("📊 Total Transactions per Chain (Last 30 Days)")
+    df_total = df_all.groupby("Chain", as_index=False)["Txns Count"].sum()
+    df_total = df_total.sort_values("Txns Count", ascending=False)
+    category_order_total = df_total["Chain"].tolist()
+    fig_bar_total = px.bar(
+        df_total,
+        y="Chain",
+        x="Txns Count",
+        text="Txns Count",
+        color="Chain",
+        orientation="h",
+        title="Total Transactions by Chain (30 Days)",
+        category_orders={"Chain": category_order_total}
+    )
+    fig_bar_total.update_traces(texttemplate='%{text}', textposition='inside')
+    st.plotly_chart(fig_bar_total, use_container_width=True)
 
-# --- Row 3: Bar Chart - Avg Daily Txns --------------------------------------------------------------------------------
-st.subheader("📊 Average Daily Transactions per Chain (Last 30 Days)")
-df_avg = df_all.groupby("Chain", as_index=False)["Txns Count"].mean()
-# گرد و تبدیل به int (بدون اعشار) همان‌طور که خواسته بودید
-df_avg["Txns Count"] = df_avg["Txns Count"].round().astype(int)
-df_avg = df_avg.sort_values("Txns Count", ascending=False)
-
-category_order_avg = df_avg["Chain"].tolist()
-fig_bar_avg = px.bar(
-    df_avg,
-    x="Chain",
-    y="Txns Count",
-    text="Txns Count",
-    color="Chain",
-    title="Average Daily Transactions by Chain (30 Days)",
-    category_orders={"Chain": category_order_avg}
-)
-fig_bar_avg.update_traces(texttemplate='%{text}', textposition='inside')
-st.plotly_chart(fig_bar_avg, use_container_width=True)
+# Average Daily Transactions
+with col2:
+    st.subheader("📊 Average Daily Transactions per Chain (Last 30 Days)")
+    df_avg = df_all.groupby("Chain", as_index=False)["Txns Count"].mean()
+    df_avg["Txns Count"] = df_avg["Txns Count"].round().astype(int)
+    df_avg = df_avg.sort_values("Txns Count", ascending=False)
+    category_order_avg = df_avg["Chain"].tolist()
+    fig_bar_avg = px.bar(
+        df_avg,
+        y="Chain",
+        x="Txns Count",
+        text="Txns Count",
+        color="Chain",
+        orientation="h",
+        title="Average Daily Transactions by Chain (30 Days)",
+        category_orders={"Chain": category_order_avg}
+    )
+    fig_bar_avg.update_traces(texttemplate='%{text}', textposition='inside')
+    st.plotly_chart(fig_bar_avg, use_container_width=True)
