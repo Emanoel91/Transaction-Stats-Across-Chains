@@ -107,6 +107,8 @@ with col1:
         category_orders={"Chain": category_order_total}
     )
     fig_bar_total.update_traces(texttemplate='%{text}', textposition='inside')
+    # افزایش ارتفاع بر اساس تعداد زنجیره‌ها
+    fig_bar_total.update_layout(height=40 * len(df_total))
     st.plotly_chart(fig_bar_total, use_container_width=True)
 
 # Average Daily Transactions
@@ -127,4 +129,6 @@ with col2:
         category_orders={"Chain": category_order_avg}
     )
     fig_bar_avg.update_traces(texttemplate='%{text}', textposition='inside')
+    # افزایش ارتفاع بر اساس تعداد زنجیره‌ها
+    fig_bar_avg.update_layout(height=40 * len(df_avg))
     st.plotly_chart(fig_bar_avg, use_container_width=True)
