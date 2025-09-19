@@ -27,7 +27,7 @@ st.markdown(
     <div style="margin-top: 20px; margin-bottom: 20px; font-size: 16px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <img src="https://axelarscan.io/logos/logo.png" style="width:25px; height:25px; border-radius: 50%;">
-            <span>Built by: <a href="https://x.com/axelar" target="_blank">Powered by Axelar</a></span>
+            <span>Powered by: <a href="https://x.com/axelar" target="_blank">Axelar</a></span>
         </div>
     </div>
     """,
