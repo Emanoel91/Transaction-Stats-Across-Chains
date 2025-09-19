@@ -12,6 +12,19 @@ st.set_page_config(
     layout="wide"
 )
 
+# --- Builder Info ---------------------------------------------------------------------------------------------------------
+st.markdown(
+    """
+    <div style="margin-top: 20px; margin-bottom: 20px; font-size: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://pbs.twimg.com/profile_images/1841479747332608000/bindDGZQ_400x400.jpg" style="width:25px; height:25px; border-radius: 50%;">
+            <span>Built by: <a href="https://x.com/0xeman_raz" target="_blank">Eman Raz</a></span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("⛓ Transaction Stats Across Chains")
 st.info("⏳ On-chain data retrieval may take a few moments. Please wait while the results load.")
 st.image("https://i.postimg.cc/mD6JM4mM/Screenshot-839.png", use_container_width=True)
